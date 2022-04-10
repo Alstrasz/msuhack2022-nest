@@ -10,7 +10,6 @@ export class SetButtonInfoDto {
 
     @ApiProperty()
     @IsString()
-    @IsNotEmpty()
     @IsOptional()
         description?: string;
 
