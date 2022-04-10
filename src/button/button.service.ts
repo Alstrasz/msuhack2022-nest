@@ -56,4 +56,8 @@ export class ButtonService {
             { returnOriginal: false },
         ).lean();
     }
+
+    async delete_button ( id: string ) {
+        await this.button_model.deleteOne( { id: id } );
+    }
 }
