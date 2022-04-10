@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/auth/dto/create_user.dto';
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +11,7 @@ export class UsersService {
 
     async create ( create_user_dto: CreateUserDto ): Promise<User> {
         const created_user = new this.user_model( {
-            uuid: uuidv4(),
+            uuid: nanoid(),
             username: create_user_dto.username,
             password_hash: create_user_dto.password_hash,
             registration_date_in_seconds: ( new Date() ).getTime(),
