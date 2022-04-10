@@ -5,6 +5,9 @@ import { Model } from 'mongoose';
 import { Counter, CounterDocument } from 'src/schemas/counter.schema';
 import mongoose from 'mongoose';
 import { counter_name } from 'src/constatns';
+import { customAlphabet } from 'nanoid';
+
+const nanoid = customAlphabet( '1234567890qazwsxedcrfvtgbyhnujmiklop' );
 
 @Injectable()
 export class ButtonService {
@@ -28,6 +31,8 @@ export class ButtonService {
                     id: id,
                     externalId: externalId,
                     owner: user_id,
+                    label: `Button_${nanoid( 5 )}`,
+                    description: `This is a button`,
                 } ) ).save( { session } );
             }
         }, { readConcern: { level: 'local' }, writeConcern: { w: 'majority' } } )
