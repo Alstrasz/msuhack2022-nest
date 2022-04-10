@@ -4,6 +4,7 @@ import { User, UserDocument } from 'src/schemas/user.schema';
 import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/auth/dto/create_user.dto';
 import { nanoid } from 'nanoid';
+import { SHA256 } from 'crypto-js';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,7 @@ export class UsersService {
         const created_user = new this.user_model( {
             uuid: nanoid(),
             username: create_user_dto.username,
-            password_hash: create_user_dto.password_hash,
+            password_hash: SHA256( create_user_dto.password_hash ).toString(),
             registration_date_in_seconds: ( new Date() ).getTime(),
         } );
         return created_user.save();

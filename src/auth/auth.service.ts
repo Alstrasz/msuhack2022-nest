@@ -5,6 +5,7 @@ import { User } from 'src/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
 import { AccessTokenDto } from './dto/access_tocken.dto';
 import { CreateUserDto } from './dto/create_user.dto';
+import { SHA256 } from 'crypto-js';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
 
     async validateUser ( username: string, password_hash: string ): Promise<User | null> {
         const user = await this.users_service.get_user_by_username( username );
-        if ( user && user.password_hash === password_hash ) {
+        if ( user && user.password_hash === SHA256( password_hash ).toString() ) {
             user.password_hash = undefined;
             return user;
         }
