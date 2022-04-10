@@ -18,7 +18,7 @@ export class ButtonInfoDto {
 
     @ApiProperty()
     @Expose()
-        decription: string;
+        description: string;
 
     @ApiProperty()
     @Expose()
@@ -27,4 +27,8 @@ export class ButtonInfoDto {
     @ApiProperty()
     @Expose()
         owner: string;
+
+    constructor ( partial: Partial<ButtonInfoDto> ) {
+        Object.assign( this, partial );
+    }
 }

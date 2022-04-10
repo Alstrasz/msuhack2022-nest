@@ -15,7 +15,7 @@ export class Button {
         label: string;
 
     @Prop( { required: true, default: 'button_description' } )
-        decription: string;
+        description: string;
 
     @Prop( { required: true, default: 0 } )
         press_counter: number;

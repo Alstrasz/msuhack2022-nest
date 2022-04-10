@@ -17,16 +17,18 @@ export class ButtonService {
     async button_create ( externalId: string, user_id: string ): Promise<void> {
         const session = await this.connection.startSession();
         await session.withTransaction( async () => {
-            const button = await this.button_model.findOne( { externalId: externalId }, { session } ).lean();
-            if ( !button ) {
-                const id = await this.counter_model.findOneAndUpdate( { name: counter_name.button }, { $inc: { count: 1 } }, { upsert: true, returnOriginal: false, session } );
-                await ( new this.button_model( {
+            console.log( 'starting session ' );
+            const data = await this.button_model.findOne( { externalId: externalId }, null, { session } );
+            console.log( 'data', data );
+            if ( data ) {
+                await this.button_model.findOneAndUpdate( { externalId: externalId }, { $inc: { press_counter: 1 } }, { upsert: true, returnOriginal: false, session } );
+            } else {
+                const id = ( await this.counter_model.findOneAndUpdate( { name: counter_name.button }, { $inc: { count: 1 } }, { upsert: true, returnOriginal: false, session } ) ).count;
+                await( new this.button_model( {
                     id: id,
                     externalId: externalId,
                     owner: user_id,
                 } ) ).save( { session } );
-            } else {
-                await this.button_model.findOneAndUpdate( { externalId: externalId }, { $inc: { count: 1 } }, { upsert: true, returnOriginal: false, session } );
             }
         }, { readConcern: { level: 'local' }, writeConcern: { w: 'majority' } } )
             .finally( () => {
@@ -36,18 +38,22 @@ export class ButtonService {
     }
 
     async get_button_by_id ( externalId: string ) {
-        return ( await this.button_model.findOne( { id: externalId } ) as any )._doc;
+        return await this.button_model.findOne( { id: externalId } ).lean();
     }
 
-    async set_label ( externalId: string, new_label: string ): Promise<Button> {
-        return await this.button_model.findOneAndUpdate( { id: externalId }, { $set: { label: new_label } }, { returnOriginal: false } ).lean();
+    async get_buttons_by_owner ( owner: string ) {
+        const ret: Array<Button> = [];
+        ( await this.button_model.find( { owner: owner } ) ).forEach( ( elem ) => {
+            ret.push( ( elem as any )._doc );
+        } );
+        return ret;
     }
 
-    async set_description ( externalId: string, new_description: string ): Promise<Button> {
-        return ( await this.button_model.findOneAndUpdate( { id: externalId }, { $set: { description: new_description } }, { returnOriginal: false } ) as any )._doc;
-    }
-
-    async set_counter ( externalId: string, new_counter: number ): Promise<Button> {
-        return ( await this.button_model.findOneAndUpdate( { id: externalId }, { $set: { press_counter: new_counter } }, { returnOriginal: false } ) as any )._doc;
+    async set_info ( externalId: string, new_label?: string, new_description?: string, new_counter?: number ): Promise<Button> {
+        return await this.button_model.findOneAndUpdate(
+            { id: externalId },
+            { $set: { label: new_label, description: new_description, press_counter: new_counter } },
+            { returnOriginal: false },
+        ).lean();
     }
 }
