@@ -1,5 +1,5 @@
 export const jwt_constants = {
-    secret: 'secretKey',
+    secret: process.env.JWT_SECRET || 'secretKey',
 };
 
 export const db_error_codes = {

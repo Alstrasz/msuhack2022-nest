@@ -23,6 +23,7 @@ services:
           - PORT=8080
           - HOST=0.0.0.0
           - MONGO_URI=mongodb://mongodb:27017/?replicaSet=rs
+          - JWT_SECRET=from_docker
         ports:
           - 3000:8080
         volumes:
