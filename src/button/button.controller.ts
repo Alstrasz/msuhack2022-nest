@@ -4,7 +4,6 @@ import { ButtonService } from './button.service';
 import { ButtonInfoDto } from './dto/button_info.dto';
 import { SetButtonInfoDto } from './dto/set_button_info.dto';
 
-
 @ApiTags( 'Button' )
 @Controller( 'button' )
 export class ButtonController {
@@ -21,15 +20,13 @@ export class ButtonController {
 
     @ApiOperation( { summary: 'Get all buttons by owner' } )
     @UsePipes( new ValidationPipe( { whitelist: true } ) )
-    @ApiOkResponse( { status: 200, type: ButtonInfoDto } )
+    @ApiOkResponse( { status: 200, type: [ButtonInfoDto] } )
     @HttpCode( 200 )
     @Get( 'all/:owner' )
-    async get_all ( @Param( 'owner' ) owner: string ): Promise<{ buttons: Array<ButtonInfoDto> }> {
-        return {
-            buttons: ( await this.button_service.get_buttons_by_owner( owner ) ).map( ( elem ) => {
-                return new ButtonInfoDto( elem );
-            } ),
-        };
+    async get_all ( @Param( 'owner' ) owner: string ): Promise<Array<ButtonInfoDto>> {
+        return ( await this.button_service.get_buttons_by_owner( owner ) ).map( ( elem ) => {
+            return new ButtonInfoDto( elem );
+        } );
     }
 
     @ApiOperation( { summary: 'Set label' } )
