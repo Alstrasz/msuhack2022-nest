@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { describe_with_db, TestContext } from 'src/abstract_spec';
 import { MtsIntegrationController } from './mts_integration.controller';
+import { MtsIntegrationModule } from './mts_integration.module';
 
-describe( 'MtsIntegrationController', () => {
-    let controller: MtsIntegrationController;
+let mts_integration_controller: MtsIntegrationController;
 
-    beforeEach( async () => {
-        const module: TestingModule = await Test.createTestingModule( {
-            controllers: [MtsIntegrationController],
-        } ).compile();
-
-        controller = module.get<MtsIntegrationController>( MtsIntegrationController );
-    } );
-
-    it( 'should be defined', () => {
-        expect( controller ).toBeDefined();
-    } );
-} );
+describe_with_db(
+    'ButtonService',
+    [MtsIntegrationModule],
+    ( context: TestContext ) => {
+        mts_integration_controller = context.module.get<MtsIntegrationController>( MtsIntegrationController );
+    },
+    () => {
+        it( 'should be defined', () => {
+            expect( mts_integration_controller ).toBeDefined();
+        } );
+    },
+);

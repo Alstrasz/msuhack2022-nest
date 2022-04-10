@@ -64,7 +64,7 @@ describe_with_db(
                     username: 'u1',
                     password_hash: 'p1',
                 } )
-                .expect( 201 )
+                .expect( 200 )
                 .expect( ( res: request.Response ) => {
                     expect( res.body.access_token ).toBeDefined();
                 } );

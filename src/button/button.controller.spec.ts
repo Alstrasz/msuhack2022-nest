@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { describe_with_db, TestContext } from 'src/abstract_spec';
 import { ButtonController } from './button.controller';
+import { ButtonModule } from './button.module';
 
-describe( 'ButtonController', () => {
-    let controller: ButtonController;
+let button_controller: ButtonController;
 
-    beforeEach( async () => {
-        const module: TestingModule = await Test.createTestingModule( {
-            controllers: [ButtonController],
-        } ).compile();
-
-        controller = module.get<ButtonController>( ButtonController );
-    } );
-
-    it( 'should be defined', () => {
-        expect( controller ).toBeDefined();
-    } );
-} );
+describe_with_db(
+    'ButtonService',
+    [ButtonModule],
+    ( context: TestContext ) => {
+        button_controller = context.module.get<ButtonController>( ButtonController );
+    },
+    () => {
+        it( 'should be defined', () => {
+            expect( button_controller ).toBeDefined();
+        } );
+    },
+);
