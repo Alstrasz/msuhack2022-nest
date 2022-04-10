@@ -6,7 +6,7 @@ import { ROLE } from 'src/auth/enums/role.enum';
 export class UserDto {
     @Expose()
     @ApiProperty()
-        uuid: string;
+        id: string;
 
     @Expose()
     @ApiProperty()

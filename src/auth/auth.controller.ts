@@ -7,8 +7,9 @@ import {
     ValidationPipe,
     Body,
     Req,
+    HttpCode,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserDto } from 'src/users/dto/user.dto';
 import { RequestWithUser } from 'src/users/interfaces/request_with_user.interface';
 import { UsersService } from 'src/users/users.service';
@@ -30,6 +31,8 @@ export class AuthController {
     ) {}
 
     @ApiOperation( { summary: 'Issues JWT token for existing user' } )
+    @ApiOkResponse( { status: 200, type: AccessTokenDto } )
+    @HttpCode( 200 )
     @UseGuards( LocalAuthGuard )
     @Post( 'login' )
     async login ( @Req() req: RequestWithUser, @Body() _create_user_dto: CreateUserDto ): Promise<AccessTokenDto> {
@@ -38,16 +41,20 @@ export class AuthController {
     }
 
     @ApiOperation( { summary: 'Returns user dto. (Currently used to check JWT and roles)' } )
+    @ApiOkResponse( { status: 200, type: UserDto } )
     @UseGuards( RolesGuard )
     @UseGuards( JwtAuthGuard )
     @Roles( ROLE.USER )
     @ApiBearerAuth( )
     @Get( 'profile' )
     async get_profile ( @Req() req: RequestWithUser ): Promise<UserDto> {
-        return new UserDto( req.user );
+        const new_user: any = req.user;
+        new_user.id = req.user.uuid;
+        return new UserDto( new_user );
     }
 
     @ApiOperation( { summary: 'Creates user and issues JWT token' } )
+    @ApiOkResponse( { status: 201, type: AccessTokenDto } )
     @UsePipes( new ValidationPipe( { whitelist: true } ) )
     @Post( 'register' )
     async register ( @Body() create_user_dto: CreateUserDto ): Promise<AccessTokenDto> {

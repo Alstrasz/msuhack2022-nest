@@ -8,6 +8,9 @@ export class Button {
     @Prop( { required: true, unique: true } )
         id: string;
 
+    @Prop( { required: true, unique: true } )
+        externalId: string;
+
     @Prop( { required: true, default: 'button_label' } )
         label: string;
 
@@ -18,7 +21,7 @@ export class Button {
         press_counter: number;
 
     @Prop( { required: true } )
-        owner_username: string;
+        owner: string;
 }
 
 export const ButtonSchema = SchemaFactory.createForClass( Button );

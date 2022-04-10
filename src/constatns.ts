@@ -14,5 +14,5 @@ export const c_error_codes = {
 };
 
 export const counter_name = {
-    post: 'Post',
+    button: 'Button',
 };
